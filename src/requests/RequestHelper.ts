@@ -1,4 +1,4 @@
-import AuthService from './AuthService';
+import TokenService from './TokenService';
 import axios, {Method} from 'axios';
 
 
@@ -20,15 +20,15 @@ class RequestHelper {
         return formData;
     }
 
-    isFormData(resource: object | FormData) {
+    isFormData(resource: {} | FormData) {
         return resource instanceof FormData;
     }
 
-    post(uri: string, data: object | FormData) {
+    post(uri: string, data: {} | FormData) {
         return this.request('POST', uri, data);
     }
 
-    patch(uri: string, data: object | FormData) {
+    patch(uri: string, data: {} | FormData) {
         return this.request('PATCH', uri, data);
     }
 
@@ -47,6 +47,8 @@ class RequestHelper {
             method = 'POST';
         }
 
+        console.log(method, url, data);
+
         return new Promise((resolve, reject) => {
             return axios.request({
                 method,
@@ -63,8 +65,8 @@ class RequestHelper {
     getHeadersForData(data: object | FormData) {
         const isFormData = this.isFormData(data);
 
-        const authorizationHeaders = AuthService.isAuthenticated()
-            ? {'Authorization': `Bearer ${AuthService.getToken()}`}
+        const authorizationHeaders = TokenService.isAuthenticated()
+            ? {'Authorization': `Bearer ${TokenService.getToken()}`}
             : {};
 
         return {

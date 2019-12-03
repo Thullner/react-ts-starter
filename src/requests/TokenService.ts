@@ -1,4 +1,4 @@
-class AuthService {
+class TokenService {
 
     static setToken(token: string) {
         return localStorage.setItem('token', token);
@@ -17,4 +17,4 @@ class AuthService {
     }
 }
 
-export default AuthService;
+export default TokenService;

@@ -7,8 +7,11 @@ class RestEndpoint {
     requestHelper: RequestHelper;
 
     constructor (resource: string) {
+
         // @ts-ignore
-        this.endpoint = process.env.API_ENDPOINT;
+        this.endpoint = process.env.REACT_APP_API_ENDPOINT;
+        console.log(this.endpoint);
+
         this.resource = resource;
         this.requestHelper = new RequestHelper();
     }
