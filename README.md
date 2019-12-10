@@ -1,3 +1,26 @@
+## About
+This is a default React Front-end.
+
+- Standard react + typescript
+- ES lint + formatter
+- Routing, private and public routes
+- Context api en hooks
+- Folder structure
+- Styling (SASS)
+- Default requests (REST)
+- Authentication
+- Some default components
+
+**GraphQL**
+
+The default react app is setup for an Laravel Rest API. To use GraphQL
+instead of rest use Apollo GrapQL. Click the following link to get
+started: [https://www.apollographql.com/docs/react/get-started/]()
+
+
+
+
+## Use
 **Installation**
 
 1. Make sure you have node and npm installed
@@ -13,10 +36,9 @@
 **Production**
 
 1. Run `npm run build`
+2. Point the server to the build folder
 
-
-**Folder structure**
-
+## Structure
 
 - /assets
     - /icons
@@ -30,4 +52,7 @@
     - All request types are in this folder
 - /styles
     - Styles are in this folder as .scss files
+    
+    
+    
      

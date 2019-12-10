@@ -16,7 +16,7 @@ const renderReactDOM = async () => {
         try {
             user = await authEndpoint.me();
         } catch (e) {
-            TokenService.logout();
+            TokenService.removeToken();
         }
     }
 

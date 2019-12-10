@@ -12,8 +12,8 @@ class TokenService {
         return localStorage.getItem('token') !== null;
     }
 
-    static logout() {
-        localStorage.removeItem('user');
+    static removeToken() {
+        localStorage.removeItem('token');
     }
 }
 

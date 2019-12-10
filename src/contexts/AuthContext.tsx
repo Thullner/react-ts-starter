@@ -35,7 +35,10 @@ export interface ILoginResponse {
 
 const AuthContextProvider: FunctionComponent<Props> = (props) => {
 
-    const [user, setUser] = useState<User>(props.user ? new User(props.user) : new User() );
+    console.log(props.user);
+    const [user, setUser] = useState<User>(props.user !== undefined ? new User(props.user) : new User() );
+
+    console.log(user);
 
     const isAuthenticated = () => {
         return typeof user.id !== 'undefined';
@@ -56,6 +59,8 @@ const AuthContextProvider: FunctionComponent<Props> = (props) => {
 
     const logout = () => {
         authEndpoint.logout();
+        TokenService.removeToken();
+        setUser(new User());
         console.log('logged out');
     };
 

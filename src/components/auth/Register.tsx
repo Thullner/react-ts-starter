@@ -36,7 +36,7 @@ const Register: FunctionComponent<Props> = (props) => {
                            required/>
                 </div>
                 <div className="form-group">
-                    <label htmlFor="password">Password</label>
+                    <label htmlFor="password">Confirm Password</label>
                     <input id="password_confirmation" type="password_confirmation" value={user.password_confirmation}
                            onChange={handleChange}
                            required/>

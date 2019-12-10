@@ -1,3 +1,20 @@
 nav {
   background: lightgray;
+
+  .nav-content {
+    max-width: 1024px;
+    margin: 0 auto;
+    padding: 1em;
+
+    display: flex;
+    justify-content: space-between;
+
+    a {
+      margin: 0 1em;
+
+      &.active {
+        color: darkred;
+      }
+    }
+  }
 }

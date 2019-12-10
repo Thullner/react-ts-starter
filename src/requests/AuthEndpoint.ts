@@ -21,7 +21,7 @@ class AuthEndpoint extends RestEndpoint {
 
 
     logout() {
-        return this.requestHelper.post('logout', {});
+        return this.requestHelper.post(`${this.endpoint}/${this.resource}/logout`, {});
     }
 
     refresh() {

@@ -6,9 +6,9 @@ class User extends Model {
     password?: string;
     password_confirmation?: string;
 
-    // eslint-disable-next-line @typescript-eslint/no-useless-constructor
     constructor(user?: User){
-        super(user);
+        super();
+        Object.assign(this, user);
     }
 }
 
