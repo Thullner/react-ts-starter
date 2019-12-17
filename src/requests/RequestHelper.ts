@@ -41,7 +41,7 @@ class RequestHelper {
         return this.request('GET', url, {});
     }
 
-    request<T>(method: string, url: string, data: object | FormData): IHttpResponse<T>{
+    request<T>(method: string, url: string, data: object | FormData): IHttpResponse<T> {
         if (this.isFormData(data)) {
             // @ts-ignore
             data.append('_method', method);
@@ -49,30 +49,39 @@ class RequestHelper {
         }
 
         return new Promise((resolve, reject) => {
-            let response: Response;
-            return fetch(url, {
-                method,
-                body: JSON.stringify(data),
-                headers: this.getHeadersForData(data),
-            })
-                .then(res => {
-                    response = res;
-                    return res.json();
+                let response: Response;
+                return fetch(url, {
+                    method,
+                    body: JSON.stringify(data),
+                    headers: this.getHeadersForData(data),
                 })
-                .then(body => {
-                    if (response.ok) {
-                        resolve(body);
-                    } else {
-                        reject(body);
-                    }
-                })
-                .catch(error => {
-                    reject(error);
-                })
-        })
+                    .then(res => {
+                        response = res;
+                        return res.json();
+                    })
+                    .then(body => {
+                        if (response.ok) {
+                            resolve(body);
+                        }
+                        if (body.errors) {
+                            reject(Object.values(body.errors));
+                        }
+                        if (body.message) {
+                            reject([body.message]);
+                        }
+                        reject([body]);
+                    })
+                    .catch(error => {
+                        reject([error])
+                    })
+            }
+        )
     }
 
-    getHeadersForData(data: object | FormData) {
+    getHeadersForData(data
+                          :
+                          object | FormData
+    ) {
         const isFormData = this.isFormData(data);
 
         const headers = new Headers();

@@ -2,6 +2,7 @@ import React, {ChangeEvent, FormEvent, FunctionComponent, useContext, useState} 
 import {AuthContext} from "../../contexts/AuthContext";
 import Credentials from "../../models/Credentials";
 import {RouteComponentProps} from 'react-router-dom';
+import ValidationError from "../util/ValidationError";
 
 interface OwnProps {
 }
@@ -11,8 +12,7 @@ type Props = OwnProps & RouteComponentProps;
 const Login: FunctionComponent<Props> = (props) => {
 
     const [credentials, setCredentials] = useState(new Credentials());
-    const [loginError, setLoginError] = useState<string | undefined>();
-
+    const [errors, setErrors] = useState([]);
     const {login} = useContext(AuthContext);
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -21,22 +21,20 @@ const Login: FunctionComponent<Props> = (props) => {
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
-        const error = await login(credentials);
+        const validationErrors = await login(credentials);
+        // @ts-ignore
+        setErrors(validationErrors);
 
-        console.log(error);
-
-        if (error !== undefined) {
-            // @ts-ignore
-            setLoginError(error.error);
-        }
     };
 
     return (
         <div>
             <form onSubmit={handleSubmit}>
                 <h2>Login</h2>
-                { loginError !== undefined ? <div className="error">{loginError}</div> : ''}
-
+                {errors.length > 0 &&
+                <ul className="errors">
+                    {errors.map(error => <ValidationError key={error}message={error}/>)}
+                </ul>}
                 <div className="form-group">
                     <label htmlFor="email">Email</label>
                     <input id="email" type="text" value={credentials.email}

@@ -13,7 +13,7 @@ const PublicRoute: FunctionComponent<Props> = (props) => {
     const {isAuthenticated} = useContext(AuthContext);
 
     if (isAuthenticated() && props.isRestricted) {
-        return <Redirect to="/"/>
+        return <Redirect to="/dashboard"/>
     }
     return <Route {...props}/>;
 };

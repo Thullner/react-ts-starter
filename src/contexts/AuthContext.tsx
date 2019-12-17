@@ -59,9 +59,14 @@ const AuthContextProvider: FunctionComponent<Props> = (props) => {
     };
 
     const register = async (userToRegister: User) => {
-        const loginResponse = await authEndpoint.register(userToRegister);
-        TokenService.setToken(loginResponse.token.access_token);
-        setUser(loginResponse.user);
+        try {
+            const loginResponse = await authEndpoint.register(userToRegister);
+            TokenService.setToken(loginResponse.token.access_token);
+            setUser(loginResponse.user);
+        } catch (e) {
+            console.log(e);
+            return e;
+        }
     };
 
     const logout = () => {

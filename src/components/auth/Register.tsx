@@ -2,6 +2,7 @@ import React, {ChangeEvent, FormEvent, FunctionComponent, useContext, useState} 
 import {AuthContext} from "../../contexts/AuthContext";
 import User from "../../models/User";
 import {RouteComponentProps} from "react-router";
+import ValidationError from "../util/ValidationError";
 
 interface OwnProps {
 }
@@ -11,22 +12,31 @@ type Props = OwnProps & RouteComponentProps;
 const Register: FunctionComponent<Props> = (props) => {
     const [user, setUser] = useState(new User());
     const {register} = useContext(AuthContext);
+    const [errors, setErrors] = useState([]);
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         setUser({...user, [e.target.id]: e.target.value})
     };
 
-    const handleSubmit = (e: FormEvent) => {
+    const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
-        register(user);
+        const validationErrors = await register(user);
+        console.log('val', validationErrors);
+
+        // @ts-ignore
+        setErrors(validationErrors);
     };
 
     return (
         <div>
             <h2>Register</h2>
             <form onSubmit={handleSubmit}>
+                {errors.length > 0 &&
+                <ul className="errors">
+                    {errors.map(error => <ValidationError key={error} message={error}/>)}
+                </ul>}
                 <div className="form-group">
-                    <label htmlFor="email">Name</label>
+                    <label htmlFor="name">Name</label>
                     <input id="name" type="text" value={user.name}
                            onChange={handleChange}
                            required/>
@@ -45,7 +55,7 @@ const Register: FunctionComponent<Props> = (props) => {
                 </div>
                 <div className="form-group">
                     <label htmlFor="password">Confirm Password</label>
-                    <input id="password_confirmation" type="password_confirmation" value={user.password_confirmation}
+                    <input id="password_confirmation" type="password" value={user.password_confirmation}
                            onChange={handleChange}
                            required/>
                 </div>

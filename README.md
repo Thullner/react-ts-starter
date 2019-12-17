@@ -2,7 +2,6 @@
 This is a default React Front-end.
 
 - Standard react + typescript
-- ES lint + formatter
 - Routing, private and public routes
 - Context api en hooks
 - Folder structure
@@ -16,8 +15,6 @@ This is a default React Front-end.
 The default react app is setup for an Laravel Rest API. To use GraphQL
 instead of rest use Apollo GrapQL. Click the following link to get
 started: [https://www.apollographql.com/docs/react/get-started/]()
-
-
 
 
 ## Use
@@ -40,6 +37,7 @@ started: [https://www.apollographql.com/docs/react/get-started/]()
 
 ## Structure
 
+All content is in the src folder
 - /assets
     - /icons
     - /images
@@ -48,10 +46,15 @@ started: [https://www.apollographql.com/docs/react/get-started/]()
     - Components should not have any direct connection to the api
 - /contexts
     - All react context are in this folder
+- /models
+  -   Contains a base Model Class a well as all the models that extend
+      it
 - /requests
     - All request types are in this folder
 - /styles
-    - Styles are in this folder as .scss files
+  - Styles are in this folder as .scss files
+  - All style sheets need to be imported either in styles.scss or in a
+    file that's imported in styles.scss
     
     
     
