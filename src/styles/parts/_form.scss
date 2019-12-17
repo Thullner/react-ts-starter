@@ -1,0 +1,17 @@
+form {
+  .form-group {
+    margin: 1em 0;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  button {
+    cursor: pointer;
+  }
+
+  .error {
+    background-color: $error-color;
+    padding: 1em;
+    border-radius: 5px;
+  }
+}

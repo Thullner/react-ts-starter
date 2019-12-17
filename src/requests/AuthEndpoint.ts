@@ -12,6 +12,7 @@ class AuthEndpoint extends RestEndpoint {
     login(credentials: Credentials): ILoginResponse {
         // @ts-ignore
         return this.requestHelper.post(`${this.endpoint}/${this.resource}/login`, credentials);
+
     }
 
     register(user: User): ILoginResponse {

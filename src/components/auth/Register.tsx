@@ -1,11 +1,12 @@
 import React, {ChangeEvent, FormEvent, FunctionComponent, useContext, useState} from 'react';
 import {AuthContext} from "../../contexts/AuthContext";
 import User from "../../models/User";
+import {RouteComponentProps} from "react-router";
 
 interface OwnProps {
 }
 
-type Props = OwnProps;
+type Props = OwnProps & RouteComponentProps;
 
 const Register: FunctionComponent<Props> = (props) => {
     const [user, setUser] = useState(new User());
@@ -22,7 +23,14 @@ const Register: FunctionComponent<Props> = (props) => {
 
     return (
         <div>
+            <h2>Register</h2>
             <form onSubmit={handleSubmit}>
+                <div className="form-group">
+                    <label htmlFor="email">Name</label>
+                    <input id="name" type="text" value={user.name}
+                           onChange={handleChange}
+                           required/>
+                </div>
                 <div className="form-group">
                     <label htmlFor="email">Email</label>
                     <input id="email" type="text" value={user.email}
@@ -43,6 +51,7 @@ const Register: FunctionComponent<Props> = (props) => {
                 </div>
                 <div className="form-group">
                     <button type="submit">Register</button>
+                    <button type="button" onClick={() => props.history.push('/')}>Cancel</button>
                 </div>
             </form>
         </div>

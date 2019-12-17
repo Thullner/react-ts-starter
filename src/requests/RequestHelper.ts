@@ -1,6 +1,7 @@
 import TokenService from './TokenService';
-import axios, {Method} from 'axios';
 
+interface IHttpResponse<T> {
+}
 
 class RequestHelper {
     static convertToFormData(object: any) {
@@ -40,24 +41,33 @@ class RequestHelper {
         return this.request('GET', url, {});
     }
 
-    request(method: Method, url: string, data: object | FormData) {
+    request<T>(method: string, url: string, data: object | FormData): IHttpResponse<T>{
         if (this.isFormData(data)) {
             // @ts-ignore
             data.append('_method', method);
             method = 'POST';
         }
 
-        console.log(method, url, data);
-
         return new Promise((resolve, reject) => {
-            return axios.request({
+            let response: Response;
+            return fetch(url, {
                 method,
-                url,
-                data,
-                headers: this.getHeadersForData(data)
-            }).then(response => resolve(response.data))
+                body: JSON.stringify(data),
+                headers: this.getHeadersForData(data),
+            })
+                .then(res => {
+                    response = res;
+                    return res.json();
+                })
+                .then(body => {
+                    if (response.ok) {
+                        resolve(body);
+                    } else {
+                        reject(body);
+                    }
+                })
                 .catch(error => {
-                    reject(error.response.data);
+                    reject(error);
                 })
         })
     }
@@ -65,15 +75,21 @@ class RequestHelper {
     getHeadersForData(data: object | FormData) {
         const isFormData = this.isFormData(data);
 
-        const authorizationHeaders = TokenService.isAuthenticated()
-            ? {'Authorization': `Bearer ${TokenService.getToken()}`}
-            : {};
+        const headers = new Headers();
 
-        return {
-            'Content-Type': isFormData ? 'multipart/form-data' : 'application/json',
-            'Accept': 'application/json',
-            ...authorizationHeaders
+        if (TokenService.isAuthenticated()) {
+            headers.append('Authorization', `Bearer ${TokenService.getToken()}`)
         }
+
+        if (isFormData) {
+            headers.append('Content-Type', 'multipart/form-data');
+        } else {
+            headers.append('Content-Type', 'application/json');
+        }
+
+        headers.append('Accept', 'application/json');
+
+        return headers;
     }
 }
 

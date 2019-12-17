@@ -33,22 +33,29 @@ export interface ILoginResponse {
     token: IToken
 }
 
+export interface IAuthError {
+    type: string,
+    message: string
+}
+
 const AuthContextProvider: FunctionComponent<Props> = (props) => {
 
-    console.log(props.user);
-    const [user, setUser] = useState<User>(props.user !== undefined ? new User(props.user) : new User() );
-
-    console.log(user);
+    const [user, setUser] = useState<User>(props.user !== undefined ? new User(props.user) : new User());
+    const [authErrors, setAuthErrors] = useState<IAuthError[]>([]);
 
     const isAuthenticated = () => {
         return typeof user.id !== 'undefined';
     };
 
     const login = async (credentials: Credentials) => {
+        try {
+            const loginResponse = await authEndpoint.login(credentials);
+            TokenService.setToken(loginResponse.token.access_token);
+            setUser(loginResponse.user);
+        } catch (e) {
+            return e;
+        }
 
-        const loginResponse = await authEndpoint.login(credentials);
-        TokenService.setToken(loginResponse.token.access_token);
-        setUser(loginResponse.user);
     };
 
     const register = async (userToRegister: User) => {
@@ -61,7 +68,6 @@ const AuthContextProvider: FunctionComponent<Props> = (props) => {
         authEndpoint.logout();
         TokenService.removeToken();
         setUser(new User());
-        console.log('logged out');
     };
 
     return (

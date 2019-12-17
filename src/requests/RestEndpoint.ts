@@ -10,8 +10,6 @@ class RestEndpoint {
 
         // @ts-ignore
         this.endpoint = process.env.REACT_APP_API_ENDPOINT;
-        console.log(this.endpoint);
-
         this.resource = resource;
         this.requestHelper = new RequestHelper();
     }

@@ -9,9 +9,7 @@ type Props = OwnProps;
 
 const NavBar: FunctionComponent<Props> = (props) => {
 
-    const {isAuthenticated, logout, user} = useContext(AuthContext);
-
-    console.log(user);
+    const {logout, user} = useContext(AuthContext);
 
     return (
         <nav>
@@ -24,7 +22,7 @@ const NavBar: FunctionComponent<Props> = (props) => {
 
                     user ?
                         <div className="nav-auth-menu">
-                            {user.email}
+                            {user.name}
                             <Link to={'/'} onClick={() => logout()}>Logout</Link>
                         </div>
                         :
