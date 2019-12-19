@@ -1,5 +1,7 @@
 import RequestHelper from './RequestHelper'
 
+type RequestJSONType = { [key: string]: any };
+export type RequestDataType = FormData | RequestJSONType;
 
 class RestEndpoint {
     endpoint: string;
@@ -8,18 +10,20 @@ class RestEndpoint {
 
     constructor (resource: string) {
 
-        // @ts-ignore
+        if (!process.env.REACT_APP_API_ENDPOINT){
+            throw new Error('REACT_APP_API_ENDPOINT is not found.');
+        }
         this.endpoint = process.env.REACT_APP_API_ENDPOINT;
         this.resource = resource;
         this.requestHelper = new RequestHelper();
     }
 
-    getKey(resource: any, key: any){
-        return resource instanceof FormData ? resource.get(key) : resource[key];
+    getKey(data: RequestDataType, key: string){
+        return data instanceof FormData ? data.get(key) : data[key];
     }
 
-    hasKey(resource: any, key: any){
-        return resource instanceof FormData ? resource.has(key) : resource[key] !== undefined;
+    hasKey(data: RequestDataType, key: string){
+        return data instanceof FormData ? data.has(key) : data[key] !== undefined;
     }
 
     all () {
@@ -30,22 +34,22 @@ class RestEndpoint {
         return this.requestHelper.get(`${this.endpoint}/${this.resource}/${id}`);
     }
 
-    createOrUpdate(resource: any) {
-        if (!this.hasKey(resource, 'id')) return this.store(resource);
-        return this.update(resource);
+    createOrUpdate(data: RequestDataType) {
+        if (!this.hasKey(data, 'id')) return this.store(data);
+        return this.update(data);
     }
 
-    store (resource: any) {
-        return this.requestHelper.post(`${this.endpoint}/${this.resource}`, resource)
+    store (data: RequestDataType) {
+        return this.requestHelper.post(`${this.endpoint}/${this.resource}`, data)
     }
 
-    update (resource: any) {
-        return this.requestHelper.patch(`${this.endpoint}/${this.resource}/${this.getKey(resource, 'id')}`, resource)
+    update (data: RequestDataType) {
+        return this.requestHelper.patch(`${this.endpoint}/${this.resource}/${this.getKey(data, 'id')}`, data)
     }
 
-    destroy (resource: any) {
-        return this.requestHelper.destroy(`${this.endpoint}/${this.resource}/${this.getKey(resource, 'id')}`)
+    destroy (data: RequestDataType) {
+        return this.requestHelper.destroy(`${this.endpoint}/${this.resource}/${this.getKey(data, 'id')}`)
     }
 }
 
-export default RestEndpoint
+export default RestEndpoint;

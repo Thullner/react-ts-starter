@@ -3,12 +3,13 @@ import Credentials from "../models/Credentials";
 import User from "../models/User";
 import AuthEndpoint from "../requests/AuthEndpoint";
 import TokenService from "../requests/TokenService";
+import RequestError from "../models/RequestError";
 
 interface IAuthContext {
     isAuthenticated: () => boolean;
-    login: (credentials: Credentials) => void;
-    register: (user: User) => void;
-    logout: () => void;
+    login: (credentials: Credentials) => Promise<void | RequestError>;
+    register: (user: User) => Promise<void | RequestError>;
+    logout: () => Promise<void>;
     user?: User;
 }
 
@@ -33,44 +34,36 @@ export interface ILoginResponse {
     token: IToken
 }
 
-export interface IAuthError {
-    type: string,
-    message: string
-}
-
 const AuthContextProvider: FunctionComponent<Props> = (props) => {
 
     const [user, setUser] = useState<User>(props.user !== undefined ? new User(props.user) : new User());
-    const [authErrors, setAuthErrors] = useState<IAuthError[]>([]);
 
     const isAuthenticated = () => {
         return typeof user.id !== 'undefined';
     };
 
-    const login = async (credentials: Credentials) => {
+    const login = async (credentials: Credentials): Promise<void | RequestError> => {
         try {
             const loginResponse = await authEndpoint.login(credentials);
             TokenService.setToken(loginResponse.token.access_token);
             setUser(loginResponse.user);
-        } catch (e) {
-            return e;
+        } catch (requestError) {
+            return requestError;
         }
-
     };
 
-    const register = async (userToRegister: User) => {
+    const register = async (userToRegister: User): Promise<void | RequestError> => {
         try {
             const loginResponse = await authEndpoint.register(userToRegister);
             TokenService.setToken(loginResponse.token.access_token);
             setUser(loginResponse.user);
-        } catch (e) {
-            console.log(e);
-            return e;
+        } catch (requestError) {
+            return requestError;
         }
     };
 
-    const logout = () => {
-        authEndpoint.logout();
+    const logout = async () => {
+        await authEndpoint.logout();
         TokenService.removeToken();
         setUser(new User());
     };

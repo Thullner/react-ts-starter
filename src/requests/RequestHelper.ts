@@ -1,49 +1,29 @@
 import TokenService from './TokenService';
+import RequestError from "../models/RequestError";
+import {RequestDataType} from "./RestEndpoint";
 
-interface IHttpResponse<T> {
-}
+interface IHttpResponse<T> {}
 
 class RequestHelper {
-    static convertToFormData(object: any) {
-        const formData = new FormData();
-        Object.keys(object).filter(key => object[key] !== null).forEach(key => {
-            let value = object[key];
-            if (Array.isArray(value)) {
-                for (const item of value) {
-                    formData.append(`${key}[]`, item);
-                }
-                return
-            }
 
-            formData.append(key, value);
-        });
-
-        return formData;
-    }
-
-    isFormData(resource: {} | FormData) {
-        return resource instanceof FormData;
-    }
-
-    post(uri: string, data: {} | FormData) {
+    post<T>(uri: string, data: RequestDataType): IHttpResponse<T> {
         return this.request('POST', uri, data);
     }
 
-    patch(uri: string, data: {} | FormData) {
+    patch<T>(uri: string, data: RequestDataType): IHttpResponse<T> {
         return this.request('PATCH', uri, data);
     }
 
-    destroy(uri: string, data = {}) {
-        return this.request('DELETE', uri, data);
+    destroy<T>(uri: string): IHttpResponse<T> {
+        return this.request('DELETE', uri, {});
     }
 
-    get(url: string) {
+    get<T>(url: string): IHttpResponse<T> {
         return this.request('GET', url, {});
     }
 
-    request<T>(method: string, url: string, data: object | FormData): IHttpResponse<T> {
-        if (this.isFormData(data)) {
-            // @ts-ignore
+    request<T>(method: string, url: string, data: RequestDataType): IHttpResponse<T> {
+        if (data instanceof FormData) {
             data.append('_method', method);
             method = 'POST';
         }
@@ -52,7 +32,7 @@ class RequestHelper {
                 let response: Response;
                 return fetch(url, {
                     method,
-                    body: JSON.stringify(data),
+                    body: data instanceof FormData ? data : JSON.stringify(data),
                     headers: this.getHeadersForData(data),
                 })
                     .then(res => {
@@ -64,33 +44,32 @@ class RequestHelper {
                             resolve(body);
                         }
                         if (body.errors) {
-                            reject(Object.values(body.errors));
+                            const requestError = new RequestError(response.status, body.message, body.errors);
+
+                            reject(requestError);
                         }
                         if (body.message) {
-                            reject([body.message]);
+                            const requestError = new RequestError(response.status, body.message)
+                            reject(requestError);
                         }
                         reject([body]);
                     })
                     .catch(error => {
-                        reject([error])
+                        const requestError = new RequestError(response.status);
+                        reject(requestError)
                     })
             }
-        )
+        );
     }
 
-    getHeadersForData(data
-                          :
-                          object | FormData
-    ) {
-        const isFormData = this.isFormData(data);
-
+    getHeadersForData(data: RequestDataType) {
         const headers = new Headers();
 
         if (TokenService.isAuthenticated()) {
             headers.append('Authorization', `Bearer ${TokenService.getToken()}`)
         }
 
-        if (isFormData) {
+        if (data instanceof FormData) {
             headers.append('Content-Type', 'multipart/form-data');
         } else {
             headers.append('Content-Type', 'application/json');

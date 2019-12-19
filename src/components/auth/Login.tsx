@@ -3,6 +3,7 @@ import {AuthContext} from "../../contexts/AuthContext";
 import Credentials from "../../models/Credentials";
 import {RouteComponentProps} from 'react-router-dom';
 import ValidationError from "../util/ValidationError";
+import RequestError from "../../models/RequestError";
 
 interface OwnProps {
 }
@@ -12,7 +13,7 @@ type Props = OwnProps & RouteComponentProps;
 const Login: FunctionComponent<Props> = (props) => {
 
     const [credentials, setCredentials] = useState(new Credentials());
-    const [errors, setErrors] = useState([]);
+    const [requestError, setRequestError] = useState<RequestError>();
     const {login} = useContext(AuthContext);
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -21,9 +22,10 @@ const Login: FunctionComponent<Props> = (props) => {
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
-        const validationErrors = await login(credentials);
-        // @ts-ignore
-        setErrors(validationErrors);
+        const requestError = await login(credentials);
+        if (requestError) {
+            setRequestError(requestError);
+        }
 
     };
 
@@ -31,10 +33,7 @@ const Login: FunctionComponent<Props> = (props) => {
         <div>
             <form onSubmit={handleSubmit}>
                 <h2>Login</h2>
-                {errors.length > 0 &&
-                <ul className="errors">
-                    {errors.map(error => <ValidationError key={error}message={error}/>)}
-                </ul>}
+                {requestError && <ValidationError requestError={requestError}/>}
                 <div className="form-group">
                     <label htmlFor="email">Email</label>
                     <input id="email" type="text" value={credentials.email}
