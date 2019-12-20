@@ -1,0 +1,20 @@
+.book-list {
+  display: flex;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+}
+
+.book-details {
+  width: 200px;
+  height: 350px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 1em;
+  margin: 0 1em 1em 0;
+
+  img {
+    max-height: 300px;
+    object-fit: cover;
+  }
+}

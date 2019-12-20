@@ -10,9 +10,11 @@ import User from "./models/User";
 import NotFoundPage from "./components/utils/NotFoundPage";
 import PrivateRoute from "./components/utils/PrivateRoute";
 import Dashboard from "./components/pages/Dashboard";
-import BookContext from "./examples/contexts/BookContext";
-import BookForm from "./examples/components/pages/BookForm";
-import BookList from "./examples/components/pages/BookList";
+
+// Example Imports
+import ExampleForm from "./examples/components/pages/BookForm";
+import ExampleList from "./examples/components/pages/BookList";
+import ExampleContextProvider from "./examples/contexts/BookContext";
 
 interface OwnProps {
     user?: User
@@ -26,7 +28,7 @@ const App: FunctionComponent<Props> = (props) => {
         <BrowserRouter>
             <div>
                 <AuthContextProvider user={props.user}>
-                    <BookContext>
+                    <ExampleContextProvider>
                         <NavBar/>
                         <div className="content">
                             <main>
@@ -39,17 +41,17 @@ const App: FunctionComponent<Props> = (props) => {
                                     <PrivateRoute exact={true} path={'/dashboard'} component={Dashboard}/>
 
                                     // Example components
-                                    <PublicRoute isRestricted={false} exact={true} path={'/example-book-list'}
-                                                 component={BookList}/>
-                                    <PublicRoute isRestricted={false} exact={true} path={'/example-book-form'}
-                                                 component={BookForm}/>
+                                    <PublicRoute isRestricted={false} exact={true} path={'/example-list'}
+                                                 component={ExampleList}/>
+                                    <PublicRoute isRestricted={false} exact={true} path={'/example-form'}
+                                                 component={ExampleForm}/>
                                     // End of example part
 
                                     <PublicRoute isRestricted={false} exact={false} component={NotFoundPage}/>
                                 </Switch>
                             </main>
                         </div>
-                    </BookContext>
+                    </ExampleContextProvider>
                 </AuthContextProvider>
             </div>
         </BrowserRouter>

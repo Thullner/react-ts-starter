@@ -3,7 +3,7 @@
     cursor: pointer;
     width: 6em;
     height: 6em;
-    background-color: blue;
+    background-color: $medium-grey;
     color: $white;
     border: none;
     background-size: contain;
@@ -11,7 +11,7 @@
     background-position: center center;
 
     &:hover {
-      background-color: darken(blue, 20%);
+      background-color: $dark-grey;
     }
 
     > div {

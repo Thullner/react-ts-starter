@@ -17,7 +17,7 @@ const NavBar: FunctionComponent<Props> = (props) => {
                 <div className="nav-main-menu">
                     NavBar
                     <NavLink exact={true} to={'/'} >Home</NavLink>
-                    <NavLink exact={true} to={'/example-book-list'} >Example - Book list</NavLink>
+                    <NavLink exact={true} to={'/example-list'} >Example List</NavLink>
                 </div>
                 {
 
