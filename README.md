@@ -8,7 +8,7 @@ This is a default React Front-end.
 - Styling (SASS)
 - Default requests (REST)
 - Authentication
-- Some default components
+- Some example components
 
 **GraphQL**
 

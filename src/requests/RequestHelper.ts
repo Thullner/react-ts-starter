@@ -15,26 +15,40 @@ class RequestHelper {
     }
 
     destroy<T>(uri: string): IHttpResponse<T> {
-        return this.request('DELETE', uri, {});
+        return this.request('DELETE', uri);
     }
 
     get<T>(url: string): IHttpResponse<T> {
-        return this.request('GET', url, {});
+        return this.request('GET', url);
     }
 
-    request<T>(method: string, url: string, data: RequestDataType): IHttpResponse<T> {
-        if (data instanceof FormData) {
-            data.append('_method', method);
-            method = 'POST';
+    getRequestInit(method: string, data?: RequestDataType): RequestInit{
+        if (data){
+            return {
+                method,
+                body: data instanceof FormData ? data : JSON.stringify(data),
+                headers: this.getHeadersForData(data),
+            }
         }
+
+        return {
+            method,
+            headers: this.getHeadersForData(),
+        }
+    }
+
+    request<T>(method: string, url: string, data?: RequestDataType): IHttpResponse<T> {
+
+        const requestInit = this.getRequestInit(method, data && data);
+
+        // if (data instanceof FormData) {
+        //     data.append('_method', method);
+        //     method = 'POST';
+        // }
 
         return new Promise((resolve, reject) => {
                 let response: Response;
-                return fetch(url, {
-                    method,
-                    body: data instanceof FormData ? data : JSON.stringify(data),
-                    headers: this.getHeadersForData(data),
-                })
+                return fetch(url, requestInit)
                     .then(res => {
                         response = res;
                         return res.json();
@@ -55,6 +69,7 @@ class RequestHelper {
                         reject([body]);
                     })
                     .catch(error => {
+                        console.log(error);
                         const requestError = new RequestError(response.status);
                         reject(requestError)
                     })
@@ -62,7 +77,7 @@ class RequestHelper {
         );
     }
 
-    getHeadersForData(data: RequestDataType) {
+    getHeadersForData(data?: RequestDataType) {
         const headers = new Headers();
 
         if (TokenService.isAuthenticated()) {
@@ -71,7 +86,7 @@ class RequestHelper {
 
         if (data instanceof FormData) {
             headers.append('Content-Type', 'multipart/form-data');
-        } else {
+        } else if (data){
             headers.append('Content-Type', 'application/json');
         }
 

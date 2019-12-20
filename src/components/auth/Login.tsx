@@ -2,7 +2,7 @@ import React, {ChangeEvent, FormEvent, FunctionComponent, useContext, useState} 
 import {AuthContext} from "../../contexts/AuthContext";
 import Credentials from "../../models/Credentials";
 import {RouteComponentProps} from 'react-router-dom';
-import ValidationError from "../util/ValidationError";
+import ValidationError from "../utils/ValidationError";
 import RequestError from "../../models/RequestError";
 
 interface OwnProps {
