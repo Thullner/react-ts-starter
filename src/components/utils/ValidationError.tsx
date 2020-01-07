@@ -11,7 +11,7 @@ type Props = OwnProps;
 const ValidationError: FunctionComponent<Props> = (props) => {
 
     return (
-        <ul className="errors">
+        <ul className="message-box errors">
             {
                 props.requestError.errors ?
                     Object.values(props.requestError.errors).map((error: any) => <li key={error}>{error}</li>)

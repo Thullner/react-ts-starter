@@ -4,13 +4,16 @@ import Book from "../../models/Book";
 import ValidationError from "../../../components/utils/ValidationError";
 import ImageUpload from "../../../components/utils/ImageUpload";
 import {BookContext} from "../../contexts/BookContext";
+import { RouteComponentProps } from 'react-router-dom';
 
-interface OwnProps {}
+interface OwnProps {
+}
 
-type Props = OwnProps;
+type Props = OwnProps & RouteComponentProps;
 
 const BookForm: FunctionComponent<Props> = (props) => {
     const [book, setBook] = useState<Book>(new Book());
+    const [image, setImage] = useState<HTMLImageElement>();
     const [requestError, setRequestError] = useState<RequestError>();
     const {addBook} = useContext(BookContext);
 
@@ -19,16 +22,21 @@ const BookForm: FunctionComponent<Props> = (props) => {
     };
 
     const handleImageUpload = (image: HTMLImageElement) => {
-        setBook({...book, image});
+        setBook(new Book({...book, image}));
+        setImage(image);
     };
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
+
         const requestError = await addBook(book);
 
         if (requestError) {
             setRequestError(requestError);
+            return;
         }
+
+        props.history.push({pathname: "/example-list", state: {message: `'${book.name}' was added`}});
     };
 
     return (

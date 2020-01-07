@@ -2,6 +2,7 @@ import React, {createContext, FunctionComponent, useEffect, useState} from 'reac
 import Book from "../models/Book";
 import RestEndpoint from "../../requests/RestEndpoint";
 import RequestError from "../../models/RequestError";
+import RequestHelper from "../../requests/RequestHelper";
 
 interface OwnProps {
 }
@@ -27,9 +28,15 @@ const BookContextProvider: FunctionComponent<Props> = (props) => {
     }, []);
 
     const addBook = async (book: Book): Promise<void | RequestError> => {
-        // @ts-ignore
-        const newBook: Book = await bookEndpoint.store(book);
-        setBooks([...books, newBook]);
+        try {
+            const bookFormData = RequestHelper.convertToFormData(book);
+
+            // @ts-ignore
+            const newBook: Book = await bookEndpoint.store(bookFormData);
+            setBooks([...books, newBook]);
+        } catch (requestError) {
+            return requestError;
+        }
     };
 
     const getAllBooks = async (): Promise<void> => {

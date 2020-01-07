@@ -6,6 +6,23 @@ interface IHttpResponse<T> {}
 
 class RequestHelper {
 
+    static convertToFormData (object: any): FormData {
+        const formData = new FormData()
+        Object.keys(object).filter(key => object[key] !== null).forEach(key => {
+            let value = object[key]
+            if (Array.isArray(value)) {
+                for (const item of value) {
+                    formData.append(`${key}[]`, item)
+                }
+                return
+            }
+
+            formData.append(key, value)
+        })
+
+        return formData
+    }
+
     post<T>(uri: string, data: RequestDataType): IHttpResponse<T> {
         return this.request('POST', uri, data);
     }
@@ -23,6 +40,11 @@ class RequestHelper {
     }
 
     getRequestInit(method: string, data?: RequestDataType): RequestInit{
+        if (data instanceof FormData) {
+            data.append('_method', method);
+            method = 'POST';
+        }
+
         if (data){
             return {
                 method,
@@ -41,10 +63,6 @@ class RequestHelper {
 
         const requestInit = this.getRequestInit(method, data && data);
 
-        // if (data instanceof FormData) {
-        //     data.append('_method', method);
-        //     method = 'POST';
-        // }
 
         return new Promise((resolve, reject) => {
                 let response: Response;
@@ -70,8 +88,6 @@ class RequestHelper {
                     })
                     .catch(error => {
                         console.log(error);
-                        const requestError = new RequestError(response.status);
-                        reject(requestError)
                     })
             }
         );
@@ -85,7 +101,7 @@ class RequestHelper {
         }
 
         if (data instanceof FormData) {
-            headers.append('Content-Type', 'multipart/form-data');
+            // headers.append('Content-Type', 'multipart/form-data');
         } else if (data){
             headers.append('Content-Type', 'application/json');
         }

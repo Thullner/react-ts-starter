@@ -11,14 +11,6 @@ form {
 
   .errors {
     background-color: $error-color;
-    padding: 0.75em;
-    border-radius: 5px;
     color: $white;
-
-    list-style-type: none;
-
-    li {
-      padding: 0.25em;
-    }
   }
 }
