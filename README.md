@@ -23,6 +23,7 @@ started: [https://www.apollographql.com/docs/react/get-started/]()
 1. Make sure you have node and npm installed
 2. Clone the project repo to your local device
 3. Run `npm install`
+4. Copy .env.example and name the copy to .env.local
 
 
 **Development**
